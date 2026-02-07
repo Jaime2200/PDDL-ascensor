@@ -10,14 +10,8 @@
     ; + nuevos ascensores
     fast fast-3 slow-b1 slow-b2a slow-b2b slow-b2c slow-b3 - elevator
 
-    ; Slots:
-    s-fast-1 s-fast-2 s-fast-3         ; fast (3)
-    s-fast3-1 s-fast3-2                ; fast-3 (2)
-    s-b1-1 s-b1-2                      ; slow-b1 (2)
-    s-b2a-1 s-b2a-2                    ; slow-b2a (2)
-    s-b2b-1 s-b2b-2                    ; slow-b2b (2)
-    s-b2c-1                            ; slow-b2c (1)
-    s-b3-1 s-b3-2 - slot               ; slow-b3 (2)
+    ; Niveles de contador
+    s0 s1 s2 s3 - count-level
   )
 
   (:init
@@ -30,31 +24,40 @@
     (at-e slow-b2c f6)
     (at-e slow-b3  f12)
 
-    ; Personas (origen)
+    ; Personas (origen) - todas disponibles
     (at-p p0 f2)
+    (available p0)
     (at-p p1 f4)
+    (available p1)
     (at-p p2 f1)
+    (available p2)
     (at-p p3 f8)
+    (available p3)
     (at-p p4 f11)
+    (available p4)
 
-    ; Slots -> ascensor
-    (slot-of s-fast-1 fast) (slot-of s-fast-2 fast) (slot-of s-fast-3 fast)
-    (slot-of s-fast3-1 fast-3) (slot-of s-fast3-2 fast-3)
+    ; Contador de pasajeros: todos comienzan en s0
+    (count fast s0)
+    (count fast-3 s0)
+    (count slow-b1 s0)
+    (count slow-b2a s0)
+    (count slow-b2b s0)
+    (count slow-b2c s0)
+    (count slow-b3 s0)
 
-    (slot-of s-b1-1 slow-b1) (slot-of s-b1-2 slow-b1)
-    (slot-of s-b2a-1 slow-b2a) (slot-of s-b2a-2 slow-b2a)
-    (slot-of s-b2b-1 slow-b2b) (slot-of s-b2b-2 slow-b2b)
-    (slot-of s-b2c-1 slow-b2c)
-    (slot-of s-b3-1 slow-b3) (slot-of s-b3-2 slow-b3)
+    ; Capacidad máxima de cada ascensor
+    (max-capacity fast s3)      ; fast puede llevar 3 pasajeros
+    (max-capacity fast-3 s2)    ; fast-3 puede llevar 2 pasajeros
+    (max-capacity slow-b1 s2)   ; los lentos pueden llevar 2
+    (max-capacity slow-b2a s2)
+    (max-capacity slow-b2b s2)
+    (max-capacity slow-b2c s1)  ; slow-b2c solo 1 pasajero
+    (max-capacity slow-b3 s2)
 
-    ; Todos libres
-    (free s-fast-1) (free s-fast-2) (free s-fast-3)
-    (free s-fast3-1) (free s-fast3-2)
-    (free s-b1-1) (free s-b1-2)
-    (free s-b2a-1) (free s-b2a-2)
-    (free s-b2b-1) (free s-b2b-2)
-    (free s-b2c-1)
-    (free s-b3-1) (free s-b3-2)
+    ; Transiciones de contador
+    (succ s0 s1)
+    (succ s1 s2)
+    (succ s2 s3)
 
     ; ==============================
     ; can-move

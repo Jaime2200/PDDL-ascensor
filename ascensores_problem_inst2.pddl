@@ -10,15 +10,8 @@
 
     fast slow-b1 slow-b2a slow-b2b slow-b3 - elevator
 
-    ; Capacidades modificadas:
-    ; fast -> 2 slots
-    s-fast-1 s-fast-2
-    ; slow-b1 -> 3 slots
-    s-b1-1 s-b1-2 s-b1-3
-    ; resto igual (2 slots)
-    s-b2a-1 s-b2a-2
-    s-b2b-1 s-b2b-2
-    s-b3-1 s-b3-2 - slot
+    ; Niveles de contador
+    s0 s1 s2 s3 - count-level
   )
 
   (:init
@@ -29,30 +22,40 @@
     (at-e slow-b2b f4)
     (at-e slow-b3  f8)
 
-    ; Personas (incluyendo nuevas)
+    ; Personas (incluyendo nuevas) - todas disponibles
     (at-p p0 f2)
+    (available p0)
     (at-p p1 f4)
+    (available p1)
     (at-p p2 f1)
+    (available p2)
     (at-p p3 f8)
+    (available p3)
     (at-p p4 f1)
+    (available p4)
     (at-p p5 f7)
+    (available p5)
     (at-p p6 f10)
+    (available p6)
 
-    ; Slots -> ascensor (capacidades)
-    (slot-of s-fast-1 fast) (slot-of s-fast-2 fast)
+    ; Contador de pasajeros: todos comienzan en s0
+    (count fast s0)
+    (count slow-b1 s0)
+    (count slow-b2a s0)
+    (count slow-b2b s0)
+    (count slow-b3 s0)
 
-    (slot-of s-b1-1 slow-b1) (slot-of s-b1-2 slow-b1) (slot-of s-b1-3 slow-b1)
+    ; Capacidad máxima (modificada)
+    (max-capacity fast s2)      ; fast ahora puede llevar 2 pasajeros
+    (max-capacity slow-b1 s3)   ; slow-b1 ahora puede llevar 3 pasajeros
+    (max-capacity slow-b2a s2)
+    (max-capacity slow-b2b s2)
+    (max-capacity slow-b3 s2)
 
-    (slot-of s-b2a-1 slow-b2a) (slot-of s-b2a-2 slow-b2a)
-    (slot-of s-b2b-1 slow-b2b) (slot-of s-b2b-2 slow-b2b)
-    (slot-of s-b3-1 slow-b3)   (slot-of s-b3-2 slow-b3)
-
-    ; Todos libres
-    (free s-fast-1) (free s-fast-2)
-    (free s-b1-1) (free s-b1-2) (free s-b1-3)
-    (free s-b2a-1) (free s-b2a-2)
-    (free s-b2b-1) (free s-b2b-2)
-    (free s-b3-1) (free s-b3-2)
+    ; Transiciones de contador
+    (succ s0 s1)
+    (succ s1 s2)
+    (succ s2 s3)
 
     ; can-move (igual que base)
     (can-move fast f0 f2)  (can-move fast f2 f0)

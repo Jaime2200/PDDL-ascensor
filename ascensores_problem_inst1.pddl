@@ -6,11 +6,7 @@
     f0 f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12 - floor
     p0 p1 p2 p3 p4 - person
     fast slow-b1 slow-b2a slow-b2b slow-b3 - elevator
-    s-fast-1 s-fast-2 s-fast-3
-    s-b1-1 s-b1-2
-    s-b2a-1 s-b2a-2
-    s-b2b-1 s-b2b-2
-    s-b3-1 s-b3-2 - slot
+    s0 s1 s2 s3 - count-level
   )
 
   (:init
@@ -21,26 +17,36 @@
     (at-e slow-b2b f4)
     (at-e slow-b3  f10)
 
-    ; Personas (cambio orígenes)
+    ; Personas (cambio orígenes) - todas disponibles
     (at-p p0 f0)
+    (available p0)
     (at-p p1 f7)
+    (available p1)
     (at-p p2 f4)
+    (available p2)
     (at-p p3 f11)
+    (available p3)
     (at-p p4 f2)
+    (available p4)
 
-    ; Slots -> ascensor
-    (slot-of s-fast-1 fast) (slot-of s-fast-2 fast) (slot-of s-fast-3 fast)
-    (slot-of s-b1-1 slow-b1) (slot-of s-b1-2 slow-b1)
-    (slot-of s-b2a-1 slow-b2a) (slot-of s-b2a-2 slow-b2a)
-    (slot-of s-b2b-1 slow-b2b) (slot-of s-b2b-2 slow-b2b)
-    (slot-of s-b3-1 slow-b3) (slot-of s-b3-2 slow-b3)
+    ; Contador de pasajeros: todos comienzan en s0
+    (count fast s0)
+    (count slow-b1 s0)
+    (count slow-b2a s0)
+    (count slow-b2b s0)
+    (count slow-b3 s0)
 
-    ; Todos libres
-    (free s-fast-1) (free s-fast-2) (free s-fast-3)
-    (free s-b1-1) (free s-b1-2)
-    (free s-b2a-1) (free s-b2a-2)
-    (free s-b2b-1) (free s-b2b-2)
-    (free s-b3-1) (free s-b3-2)
+    ; Capacidad máxima de cada ascensor
+    (max-capacity fast s3)
+    (max-capacity slow-b1 s2)
+    (max-capacity slow-b2a s2)
+    (max-capacity slow-b2b s2)
+    (max-capacity slow-b3 s2)
+
+    ; Transiciones de contador
+    (succ s0 s1)
+    (succ s1 s2)
+    (succ s2 s3)
 
     ; ========= can-move (igual que tu problema base) =========
     (can-move fast f0 f2)  (can-move fast f2 f0)
