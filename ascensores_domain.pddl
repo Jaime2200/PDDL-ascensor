@@ -63,6 +63,7 @@
   ; ========================
   ; BAJAR PASAJERO (DEBARK)
   ; ========================
+  
   (:action debark
     :parameters (?p - person ?e - elevator ?f - floor ?c1 ?c2 - count-level)
     :precondition (and

@@ -1,54 +1,42 @@
-; Solo cambio de situación inicial y objetivo
 (define (problem practica1-edificio-inst1)
-  (:domain edificio-ascensores)
+  (:domain edificio-ascensores-v2)
 
   (:objects
     f0 f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12 - floor
     p0 p1 p2 p3 p4 - person
     fast slow-b1 slow-b2a slow-b2b slow-b3 - elevator
-    s0 s1 s2 s3 - count-level
   )
 
   (:init
-    ; Ascensores (cambio posiciones)
-    (at-e fast     f6)
-    (at-e slow-b1  f1)
+    ; Posición ascensores
+    (at-e fast f6)
+    (at-e slow-b1 f1)
     (at-e slow-b2a f8)
     (at-e slow-b2b f4)
-    (at-e slow-b3  f10)
+    (at-e slow-b3 f10)
 
-    ; Personas (cambio orígenes) - todas disponibles
-    (at-p p0 f0)
-    (available p0)
-    (at-p p1 f7)
-    (available p1)
-    (at-p p2 f4)
-    (available p2)
-    (at-p p3 f11)
-    (available p3)
-    (at-p p4 f2)
-    (available p4)
+    ; Personas
+    (at-p p0 f0) (available p0)
+    (at-p p1 f7) (available p1)
+    (at-p p2 f4) (available p2)
+    (at-p p3 f11) (available p3)
+    (at-p p4 f2) (available p4)
 
-    ; Contador de pasajeros: todos comienzan en s0
-    (count fast s0)
-    (count slow-b1 s0)
-    (count slow-b2a s0)
-    (count slow-b2b s0)
-    (count slow-b3 s0)
+    ; Cargas iniciales
+    (= (load fast) 0)
+    (= (load slow-b1) 0)
+    (= (load slow-b2a) 0)
+    (= (load slow-b2b) 0)
+    (= (load slow-b3) 0)
 
-    ; Capacidad máxima de cada ascensor
-    (max-capacity fast s3)
-    (max-capacity slow-b1 s2)
-    (max-capacity slow-b2a s2)
-    (max-capacity slow-b2b s2)
-    (max-capacity slow-b3 s2)
+    ; Capacidades
+    (= (max-load fast) 3)
+    (= (max-load slow-b1) 2)
+    (= (max-load slow-b2a) 2)
+    (= (max-load slow-b2b) 2)
+    (= (max-load slow-b3) 2)
 
-    ; Transiciones de contador
-    (succ s0 s1)
-    (succ s1 s2)
-    (succ s2 s3)
 
-    ; ========= can-move (igual que tu problema base) =========
     (can-move fast f0 f2)  (can-move fast f2 f0)
     (can-move fast f2 f4)  (can-move fast f4 f2)
     (can-move fast f4 f6)  (can-move fast f6 f4)
