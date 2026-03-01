@@ -64,35 +64,91 @@
     ; ================================
 
     ; --- Ascensor RÁPIDO: solo entre plantas pares ---
-    (can-move fast f0 f2)  (can-move fast f2 f0)
-    (can-move fast f2 f4)  (can-move fast f4 f2)
-    (can-move fast f4 f6)  (can-move fast f6 f4)
-    (can-move fast f6 f8)  (can-move fast f8 f6)
+    (can-move fast f0 f2) (can-move fast f2 f0)
+    (can-move fast f0 f4) (can-move fast f4 f0)
+    (can-move fast f0 f6) (can-move fast f6 f0)
+    (can-move fast f0 f8) (can-move fast f8 f0)
+    (can-move fast f0 f10) (can-move fast f10 f0)
+    (can-move fast f0 f12) (can-move fast f12 f0)
+
+    (can-move fast f2 f4) (can-move fast f4 f2)
+    (can-move fast f2 f6) (can-move fast f6 f2)
+    (can-move fast f2 f8) (can-move fast f8 f2)
+    (can-move fast f2 f10) (can-move fast f10 f2)
+    (can-move fast f2 f12) (can-move fast f12 f2)
+
+    (can-move fast f4 f6) (can-move fast f6 f4)
+    (can-move fast f4 f8) (can-move fast f8 f4)
+    (can-move fast f4 f10) (can-move fast f10 f4)
+    (can-move fast f4 f12) (can-move fast f12 f4)
+
+    (can-move fast f6 f8) (can-move fast f8 f6)
+    (can-move fast f6 f10) (can-move fast f10 f6)
+    (can-move fast f6 f12) (can-move fast f12 f6)
+
     (can-move fast f8 f10) (can-move fast f10 f8)
+    (can-move fast f8 f12) (can-move fast f12 f8)
+
     (can-move fast f10 f12) (can-move fast f12 f10)
 
     ; --- LENTO Bloque 1 (0-4): movimientos entre contiguas ---
     (can-move slow-b1 f0 f1) (can-move slow-b1 f1 f0)
+    (can-move slow-b1 f0 f2) (can-move slow-b1 f2 f0)
+    (can-move slow-b1 f0 f3) (can-move slow-b1 f3 f0)
+    (can-move slow-b1 f0 f4) (can-move slow-b1 f4 f0)
+
     (can-move slow-b1 f1 f2) (can-move slow-b1 f2 f1)
+    (can-move slow-b1 f1 f3) (can-move slow-b1 f3 f1)
+    (can-move slow-b1 f1 f4) (can-move slow-b1 f4 f1)
+
     (can-move slow-b1 f2 f3) (can-move slow-b1 f3 f2)
+    (can-move slow-b1 f2 f4) (can-move slow-b1 f4 f2)
+
     (can-move slow-b1 f3 f4) (can-move slow-b1 f4 f3)
 
     ; --- LENTO Bloque 2 (4-8) - ascensor 1 ---
     (can-move slow-b2a f4 f5) (can-move slow-b2a f5 f4)
+    (can-move slow-b2a f4 f6) (can-move slow-b2a f6 f4)
+    (can-move slow-b2a f4 f7) (can-move slow-b2a f7 f4)
+    (can-move slow-b2a f4 f8) (can-move slow-b2a f8 f4)
+
     (can-move slow-b2a f5 f6) (can-move slow-b2a f6 f5)
+    (can-move slow-b2a f5 f7) (can-move slow-b2a f7 f5)
+    (can-move slow-b2a f5 f8) (can-move slow-b2a f8 f5)
+
     (can-move slow-b2a f6 f7) (can-move slow-b2a f7 f6)
+    (can-move slow-b2a f6 f8) (can-move slow-b2a f8 f6)
+
     (can-move slow-b2a f7 f8) (can-move slow-b2a f8 f7)
 
     ; --- LENTO Bloque 2 (4-8) - ascensor 2 ---
     (can-move slow-b2b f4 f5) (can-move slow-b2b f5 f4)
+    (can-move slow-b2b f4 f6) (can-move slow-b2b f6 f4)
+    (can-move slow-b2b f4 f7) (can-move slow-b2b f7 f4)
+    (can-move slow-b2b f4 f8) (can-move slow-b2b f8 f4)
+
     (can-move slow-b2b f5 f6) (can-move slow-b2b f6 f5)
+    (can-move slow-b2b f5 f7) (can-move slow-b2b f7 f5)
+    (can-move slow-b2b f5 f8) (can-move slow-b2b f8 f5)
+
     (can-move slow-b2b f6 f7) (can-move slow-b2b f7 f6)
+    (can-move slow-b2b f6 f8) (can-move slow-b2b f8 f6)
+
     (can-move slow-b2b f7 f8) (can-move slow-b2b f8 f7)
 
     ; --- LENTO Bloque 3 (8-12) ---
-    (can-move slow-b3 f8 f9)   (can-move slow-b3 f9 f8)
-    (can-move slow-b3 f9 f10)  (can-move slow-b3 f10 f9)
+    (can-move slow-b3 f8 f9) (can-move slow-b3 f9 f8)
+    (can-move slow-b3 f8 f10) (can-move slow-b3 f10 f8)
+    (can-move slow-b3 f8 f11) (can-move slow-b3 f11 f8)
+    (can-move slow-b3 f8 f12) (can-move slow-b3 f12 f8)
+
+    (can-move slow-b3 f9 f10) (can-move slow-b3 f10 f9)
+    (can-move slow-b3 f9 f11) (can-move slow-b3 f11 f9)
+    (can-move slow-b3 f9 f12) (can-move slow-b3 f12 f9)
+
     (can-move slow-b3 f10 f11) (can-move slow-b3 f11 f10)
+    (can-move slow-b3 f10 f12) (can-move slow-b3 f12 f10)
+
     (can-move slow-b3 f11 f12) (can-move slow-b3 f12 f11)
   )
 
