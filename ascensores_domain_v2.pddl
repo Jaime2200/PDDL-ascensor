@@ -1,56 +1,67 @@
-(define (domain edificio-ascensores-v2)
-  (:requirements :strips :typing :adl :fluents)
+(define (domain ascensores)
+
+  (:requirements :strips :typing)
+
   (:types
-    floor person elevator
+      elevator
+      floor
+      passenger
   )
 
   (:predicates
-    (at-e ?e - elevator ?f - floor)
-    (at-p ?p - person ?f - floor)
-    (in ?p - person ?e - elevator)
-    (available ?p - person)
-    (can-move ?e - elevator ?from - floor ?to - floor)
+      (at-e ?e - elevator ?f - floor)
+      (at-p ?p - passenger ?f - floor)
+      (in ?p - passenger ?e - elevator)
+      (serves ?e - elevator ?f - floor)
   )
 
-  (:functions
-    (load ?e - elevator)
-    (max-load ?e - elevator)
-  )
+  ;; =========================
+  ;; MOVER ASCENSOR
+  ;; =========================
 
   (:action move-elevator
     :parameters (?e - elevator ?from - floor ?to - floor)
-    :precondition (and (at-e ?e ?from) (can-move ?e ?from ?to))
-    :effect (and (at-e ?e ?to) (not (at-e ?e ?from)))
+    :precondition (and
+        (at-e ?e ?from)
+        (serves ?e ?from)
+        (serves ?e ?to)
+    )
+    :effect (and
+        (at-e ?e ?to)
+        (not (at-e ?e ?from))
+    )
   )
+
+  ;; =========================
+  ;; SUBIR PASAJERO
+  ;; =========================
 
   (:action board
-    :parameters (?p - person ?e - elevator ?f - floor)
+    :parameters (?p - passenger ?e - elevator ?f - floor)
     :precondition (and
         (at-p ?p ?f)
-        (available ?p)
         (at-e ?e ?f)
-        (< (load ?e) (max-load ?e))
     )
     :effect (and
         (in ?p ?e)
-        (not (available ?p))
         (not (at-p ?p ?f))
-        (increase (load ?e) 1)
     )
   )
 
+  ;; =========================
+  ;; BAJAR PASAJERO
+  ;; =========================
+
   (:action debark
-    :parameters (?p - person ?e - elevator ?f - floor)
+    :parameters (?p - passenger ?e - elevator ?f - floor)
     :precondition (and
         (in ?p ?e)
         (at-e ?e ?f)
-        (> (load ?e) 0)
     )
     :effect (and
         (at-p ?p ?f)
-        (available ?p)
         (not (in ?p ?e))
-        (decrease (load ?e) 1)
     )
   )
+
 )
