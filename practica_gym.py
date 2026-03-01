@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import pddlgym
+import itertools
 
 # ------------------------------------------------------------
 # ENV
@@ -160,30 +161,102 @@ def run_planner(problem_idx: int) -> int:
 # ------------------------------------------------------------
 # MAIN
 # ------------------------------------------------------------
+def episodes_to_max_and_max_return(episode_rewards, smooth_window: int = 1):
+    """
+    Devuelve:
+      - ep_to_max: episodio (1-indexado) donde se alcanza el máximo
+      - max_ret: valor máximo del return
+    Si smooth_window > 1 usa media móvil para encontrar el episodio del máximo.
+    """
+    if not episode_rewards:
+        return None, None
+
+    r = np.asarray(episode_rewards, dtype=float)
+
+    if smooth_window and smooth_window > 1 and len(r) >= smooth_window:
+        kernel = np.ones(smooth_window) / smooth_window
+        r_smooth = np.convolve(r, kernel, mode="valid")
+        i = int(np.argmax(r_smooth))
+        # el índice i corresponde al final de la ventana i..i+W-1
+        ep_to_max = i + smooth_window
+        max_ret = float(np.max(r_smooth))
+        return ep_to_max, max_ret
+
+    i = int(np.argmax(r))
+    return i + 1, float(r[i])
+
+
+
 if __name__ == "__main__":
-    problem_indices = [0, 1, 2, 3]  # problemas/tamaños distintos
-    results_by_problem = []
+    domain = "PDDLEnv<Domain>-v0"
 
-    for idx in problem_indices:
-        print(f"\n=== Ejecutando Q-learning para problema {idx} ===")
-        env = make_env(domain="PDDLEnvAscensores-v0", problem_idx=idx)
-        result = run_q_learning(env=env, total_episodes=3000)
+    # Asegura que el problem_idx existe (evita el crash del idx=1)
+    env_check = pddlgym.make(domain)
+    n_probs = len(getattr(env_check, "problems", []))
+    if n_probs == 0:
+        raise RuntimeError(f"{domain} no tiene problemas cargados.")
+    problem_idx = 0  # <- usa 0 o el que exista: 0..n_probs-1
 
-        plan_cost = run_planner(idx)
+    # GRID como el de la tabla (ajusta a tu gusto)
+    alphas = [0.1, 0.2, 0.5]
+    gammas = [0.9, 0.95, 0.99]
+    eps_decays = [0.99, 0.995, 0.999]
 
-        results_by_problem.append({
-            "problem_idx": idx,
-            "n_estados": len(result["vistos"]),
-            "q_shape": result["q_shape"],
-            "recompensa_media": np.mean(result["episode_rewards"]),
-            "episodio_convergencia": result["converged_episode_exact"],
-            "planificador_coste": plan_cost
-        })
+    # Repeticiones (en tu tabla parecen varias filas por misma combinación)
+    seeds = [0, 1, 2]   # 3 repeticiones
 
-    df_comparativa = pd.DataFrame(results_by_problem)
-    print("\n===== DATAFRAME COMPARATIVA =====")
-    print(df_comparativa)
+    total_episodes = 3000
+    max_steps = 2000
+    epsilon_start = 1.0
+    epsilon_min = 0.01
 
-    # Export opcional
-    df_comparativa.to_csv("comparativa_qlearning_planificador.csv", index=False)
-    print("\n[OK] CSV guardado: comparativa_qlearning_planificador.csv")
+    smooth_window = 1  # pon 1 para "max return" puro; o 50 si quieres media móvil
+
+    rows = []
+
+    for alpha, gamma, eps_decay in itertools.product(alphas, gammas, eps_decays):
+        for seed in seeds:
+            print(f"Grid: alpha={alpha}, gamma={gamma}, eps_decay={eps_decay}, seed={seed}")
+
+            env = make_env(domain=domain, problem_idx=problem_idx)
+
+            res = run_q_learning(
+                env=env,
+                total_episodes=total_episodes,
+                learning_rate=alpha,
+                gamma=gamma,
+                epsilon_start=epsilon_start,
+                epsilon_min=epsilon_min,
+                epsilon_decay=eps_decay,
+                max_steps=max_steps,
+                seed=seed,
+                # opcional: puedes fijar early stop o no
+                early_stop_on_convergence=False,  # para que siempre llegue a total_episodes
+            )
+
+            ep_to_max, max_ret = episodes_to_max_and_max_return(
+                res["episode_rewards"],
+                smooth_window=smooth_window
+            )
+
+            rows.append({
+                "alpha": alpha,
+                "gamma": gamma,
+                "epsilon_decay": eps_decay,
+                "seed": seed,
+                "Episodes to max return": ep_to_max,
+                "Max return": max_ret,
+                "Episodes run": len(res["episode_rewards"]),
+                "n_states": len(res["vistos"]),
+            })
+
+    df_grid = pd.DataFrame(rows)
+
+    # (Opcional) ordenar como en la tabla
+    df_grid = df_grid.sort_values(["alpha", "gamma", "epsilon_decay", "seed"]).reset_index(drop=True)
+
+    print("\n===== GRID SEARCH RESULTS =====")
+    print(df_grid[["alpha", "gamma", "epsilon_decay", "Episodes to max return", "Max return"]])
+
+    df_grid.to_csv("gridsearch_qlearning.csv", index=False)
+    print("\n[OK] CSV guardado: gridsearch_qlearning.csv")
