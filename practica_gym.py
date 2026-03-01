@@ -16,6 +16,21 @@ import pddlgym
 # ------------------------------------------------------------
 def make_env(domain: str = "PDDLEnv<Domain>-v0", problem_idx: int = 0) -> Any:
     env = pddlgym.make(domain)
+
+    # Diagnóstico: cuántos problemas hay realmente
+    n_probs = len(getattr(env, "problems", []))
+    if n_probs == 0:
+        raise RuntimeError(
+            f"El entorno {domain} no tiene lista de problemas (env.problems vacío). "
+            "Revisa el registro del entorno y los ficheros PDDL."
+        )
+
+    if problem_idx < 0 or problem_idx >= n_probs:
+        raise IndexError(
+            f"problem_idx={problem_idx} fuera de rango para {domain}. "
+            f"Problemas disponibles: {n_probs} (índices válidos 0..{n_probs-1})."
+        )
+
     env.fix_problem_index(problem_idx)
     return env
 
@@ -151,7 +166,7 @@ if __name__ == "__main__":
 
     for idx in problem_indices:
         print(f"\n=== Ejecutando Q-learning para problema {idx} ===")
-        env = make_env(domain="PDDLEnv<Domain>-v0", problem_idx=idx)
+        env = make_env(domain="PDDLEnvAscensores-v0", problem_idx=idx)
         result = run_q_learning(env=env, total_episodes=3000)
 
         plan_cost = run_planner(idx)
